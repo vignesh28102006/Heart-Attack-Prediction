@@ -19,7 +19,7 @@ def render_eda_view():
 
     tab1, tab2, tab3, tab4 = st.tabs([
         "🔥 Correlation Heatmap",
-        "💔 Diagnosis & Chest Pain",
+        "💔 Target Class & Chest Pain",
         "🫀 Exercise Stress & Max HR",
         "📈 Age vs Cholesterol",
     ])
@@ -43,14 +43,14 @@ def render_eda_view():
         with col1:
             target_img = EDA_PLOTS_DIR / "target_distribution.png"
             if target_img.exists():
-                st.image(str(target_img), caption="Cohort Diagnosis Prevalence (54.1% Normal vs 45.9% Disease)", use_container_width=True)
+                st.image(str(target_img), caption="Cohort Prevalence (54.1% No Disease vs 45.9% Disease)", use_container_width=True)
         with col2:
             cp_img = EDA_PLOTS_DIR / "chest_pain_distribution.png"
             if cp_img.exists():
-                st.image(str(cp_img), caption="Chest Pain Type vs Confirmed Disease", use_container_width=True)
+                st.image(str(cp_img), caption="Chest Pain Type vs Heart Disease Status", use_container_width=True)
 
         st.info(
-            "💡 **Clinical Takeaway:** Counter-intuitively in this cohort, **asymptomatic chest pain (Type 3)** correlates with the highest proportion of angiographically confirmed CAD, underscoring the lethal nature of silent ischemia."
+            "💡 **Observation:** In this cohort, **asymptomatic chest pain (Type 3)** correlates with the highest proportion of confirmed heart disease."
         )
 
     with tab3:
@@ -61,7 +61,7 @@ def render_eda_view():
         st.markdown(
             """
             - Healthy patients regularly exceed **160 bpm** during standard Bruce protocol exercise stress testing.
-            - Patients with severe coronary artery disease struggle to achieve target peak rates, frequently failing to cross **135 bpm**.
+            - Patients with heart disease often struggle to achieve target peak rates, frequently failing to cross **135 bpm**.
             """
         )
 
@@ -69,7 +69,7 @@ def render_eda_view():
         st.subheader("Serum Cholesterol vs Age Stratification")
         chol_img = EDA_PLOTS_DIR / "age_chol_by_target.png"
         if chol_img.exists():
-            st.image(str(chol_img), caption="Cholesterol vs Age Segregated by Diagnosis", use_container_width=True)
+            st.image(str(chol_img), caption="Cholesterol vs Age Segregated by Heart Disease Status", use_container_width=True)
         st.markdown(
             """
             - Hypercholesterolemia (> 240 mg/dl) is common across both cohorts, demonstrating that **cholesterol alone is not an independent differentiator** without stress test indicators (`oldpeak`, `thalach`, and `slope`).

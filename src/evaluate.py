@@ -79,20 +79,56 @@ def evaluate_all_models(
         print(f"  Precision:            {prec:.4f}")
         print(f"  Confusion Matrix:     TP={tp}, FP={fp}, TN={tn}, FN={fn}")
 
-    # Identify model with highest recall on the held-out test set
-    best_model_name = max(
-        results.keys(), key=lambda k: (results[k]["recall"], results[k]["f1_score"])
-    )
-    print(
-        f"\n>>> Model with highest recall on the held-out test set: {best_model_name} "
-        f"(Recall: {results[best_model_name]['recall']:.4f}) <<<"
-    )
+    # -------------------------------------------------------------------------
+    # MODEL SELECTION:
+    # Strictly selected using highest mean 5-fold CV recall on the training set.
+    # The holdout test set is NEVER used for model selection or tuning.
+    # -------------------------------------------------------------------------
+    if cv_results:
+        selected_model_name = max(
+            cv_results.keys(),
+            key=lambda k: (cv_results[k]["cv_recall_mean"], cv_results[k]["cv_f1_mean"])
+        )
+    else:
+        # Fallback to standard baseline if CV not supplied
+        selected_model_name = "Logistic Regression"
 
-    # Save metrics JSON
+    print("\n" + "=" * 70)
+    print("MODEL SELECTION RESULT (From Training Data 5-Fold Stratified CV):")
+    print(f"Selected Model based on mean 5-fold CV recall: {selected_model_name}")
+    if cv_results and selected_model_name in cv_results:
+        sm_cv = cv_results[selected_model_name]
+        print(f"  Mean CV Recall:    {sm_cv['cv_recall_mean']:.4f} (±{sm_cv['cv_recall_std']:.4f})  <-- SELECTION CRITERION")
+        print(f"  Mean CV ROC-AUC:   {sm_cv['cv_roc_auc_mean']:.4f} (±{sm_cv['cv_roc_auc_std']:.4f})")
+        print(f"  Mean CV F1-Score:  {sm_cv['cv_f1_mean']:.4f} (±{sm_cv['cv_f1_std']:.4f})")
+        print(f"  Mean CV Accuracy:  {sm_cv['cv_accuracy_mean']:.4f} (±{sm_cv['cv_accuracy_std']:.4f})")
+    print("=" * 70)
+
+    print("\n" + "=" * 70)
+    print("FINAL HELD-OUT TEST EVALUATION (Untouched 20% Holdout Test Set - 61 Patients):")
+    for name, m in results.items():
+        print(f"[{name}] Test Recall: {m['recall']:.4f} | Test ROC-AUC: {m['roc_auc']:.4f} | Test F1: {m['f1_score']:.4f} | Test Acc: {m['accuracy']:.4f}")
+    print("=" * 70)
+
+    # Save metrics JSON with explicit methodological separation
     output_payload = {
         "evaluation_timestamp": datetime.now(timezone.utc).isoformat(),
-        "primary_metric": "recall",
-        "best_model": best_model_name,
+        "model_selection": {
+            "methodology": "5-Fold Stratified Cross-Validation on 242-sample training set",
+            "primary_metric": "mean_cv_recall",
+            "selected_model": selected_model_name,
+            "cv_metrics_summary": cv_results if cv_results else {},
+        },
+        "final_held_out_test_evaluation": {
+            "test_sample_count": len(y_test),
+            "test_class_distribution": {
+                "0": int((y_test == 0).sum()),
+                "1": int((y_test == 1).sum()),
+            },
+            "unseen_holdout_status": "Untouched during preprocessing and model selection",
+        },
+        "selected_model": selected_model_name,
+        "best_model": selected_model_name,  # Backward compatibility for legacy readers
         "models": results,
     }
 
@@ -103,8 +139,9 @@ def evaluate_all_models(
     # Save model metadata
     metadata = {
         "trained_at": datetime.now(timezone.utc).isoformat(),
-        "primary_metric": "recall",
-        "best_model": best_model_name,
+        "model_selection_basis": "Mean 5-Fold Stratified Cross-Validation Recall on Training Data",
+        "selected_model": selected_model_name,
+        "best_model": selected_model_name,
         "numerical_features": NUMERICAL_FEATURES,
         "categorical_features": CATEGORICAL_FEATURES,
         "all_features": ALL_FEATURES,
@@ -145,8 +182,8 @@ def generate_evaluation_plots(results: dict, roc_data: dict):
             fontsize=12,
             fontweight="bold",
         )
-        axes[i].set_xlabel("Predicted Diagnosis", fontsize=11)
-        axes[i].set_ylabel("Actual Diagnosis", fontsize=11)
+        axes[i].set_xlabel("Predicted Class", fontsize=11)
+        axes[i].set_ylabel("Actual Class", fontsize=11)
 
     plt.tight_layout()
     plt.savefig(MODELS_DIR / "confusion_matrices.png", dpi=200)

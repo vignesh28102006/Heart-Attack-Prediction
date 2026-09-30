@@ -1,7 +1,58 @@
 {
-  "evaluation_timestamp": "2026-09-30T17:38:29.131865+00:00",
-  "primary_metric": "recall",
-  "best_model": "XGBoost",
+  "evaluation_timestamp": "2026-09-30T18:43:12.028220+00:00",
+  "model_selection": {
+    "methodology": "5-Fold Stratified Cross-Validation on 242-sample training set",
+    "primary_metric": "mean_cv_recall",
+    "selected_model": "Logistic Regression",
+    "cv_metrics_summary": {
+      "Logistic Regression": {
+        "cv_recall_mean": 0.8098814229249012,
+        "cv_recall_std": 0.061619526545154374,
+        "cv_accuracy_mean": 0.8551870748299321,
+        "cv_accuracy_std": 0.023767881465657423,
+        "cv_precision_mean": 0.8730744935655421,
+        "cv_precision_std": 0.062069878232006284,
+        "cv_f1_mean": 0.8365444245676803,
+        "cv_f1_std": 0.02550620767591018,
+        "cv_roc_auc_mean": 0.9024779568257829,
+        "cv_roc_auc_std": 0.014803685378876278
+      },
+      "Random Forest": {
+        "cv_recall_mean": 0.7735177865612648,
+        "cv_recall_std": 0.10067497058547174,
+        "cv_accuracy_mean": 0.8138605442176872,
+        "cv_accuracy_std": 0.03530847350383201,
+        "cv_precision_mean": 0.8158020050125312,
+        "cv_precision_std": 0.0464770557136489,
+        "cv_f1_mean": 0.7890053189901415,
+        "cv_f1_std": 0.05015547575641921,
+        "cv_roc_auc_mean": 0.8975119083814735,
+        "cv_roc_auc_std": 0.028641765260545963
+      },
+      "XGBoost": {
+        "cv_recall_mean": 0.7743083003952569,
+        "cv_recall_std": 0.06546724209026197,
+        "cv_accuracy_mean": 0.8056972789115646,
+        "cv_accuracy_std": 0.017314395243842727,
+        "cv_precision_mean": 0.8010044113018943,
+        "cv_precision_std": 0.04265243357215041,
+        "cv_f1_mean": 0.7841937401587454,
+        "cv_f1_std": 0.025001247591010058,
+        "cv_roc_auc_mean": 0.8743122417035462,
+        "cv_roc_auc_std": 0.02878980962314025
+      }
+    }
+  },
+  "final_held_out_test_evaluation": {
+    "test_sample_count": 61,
+    "test_class_distribution": {
+      "0": 33,
+      "1": 28
+    },
+    "unseen_holdout_status": "Untouched during preprocessing and model selection"
+  },
+  "selected_model": "Logistic Regression",
+  "best_model": "Logistic Regression",
   "models": {
     "Logistic Regression": {
       "recall": 0.9285714285714286,

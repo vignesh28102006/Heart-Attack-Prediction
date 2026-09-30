@@ -20,9 +20,9 @@ def load_ml_pipeline():
     """Load serialized preprocessor and models into Streamlit cache."""
     preprocessor = joblib.load(PREPROCESSOR_PATH)
     models = {
-        "XGBoost (Highest Test Recall: 96.43%)": joblib.load(XGBOOST_PATH),
-        "Random Forest Classifier": joblib.load(RANDOM_FOREST_PATH),
-        "Logistic Regression (Baseline)": joblib.load(LOGISTIC_REGRESSION_PATH),
+        "Logistic Regression (Selected via 5-Fold CV Recall: 80.99%)": joblib.load(LOGISTIC_REGRESSION_PATH),
+        "XGBoost Classifier (Test Recall: 96.43%)": joblib.load(XGBOOST_PATH),
+        "Random Forest Classifier (Test Recall: 89.29%)": joblib.load(RANDOM_FOREST_PATH),
     }
     return preprocessor, models
 
@@ -47,7 +47,7 @@ def render_predict_view():
         "Select Machine Learning Engine:",
         options=list(models.keys()),
         index=0,
-        help="XGBoost demonstrated the highest recall on the held-out test set (0.9643).",
+        help="Logistic Regression was selected based on the highest mean 5-fold CV recall (80.99%) on the training set.",
     )
     selected_model = models[model_choice]
 

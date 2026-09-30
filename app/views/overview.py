@@ -40,14 +40,14 @@ def render_overview_view():
     # Data Explorer
     st.subheader("🔍 Patient Cohort Data Explorer")
     show_disease = st.selectbox(
-        "Filter by Target Diagnosis:",
-        options=["All Patients", "Heart Disease Present (1)", "No Disease / Healthy (0)"],
+        "Filter by Target Class:",
+        options=["All Patients", "Heart Disease (1)", "No Disease (0)"],
     )
 
     filtered_df = df.copy()
-    if show_disease == "Heart Disease Present (1)":
+    if show_disease == "Heart Disease (1)":
         filtered_df = filtered_df[filtered_df["target"] == 1]
-    elif show_disease == "No Disease / Healthy (0)":
+    elif show_disease == "No Disease (0)":
         filtered_df = filtered_df[filtered_df["target"] == 0]
 
     st.dataframe(filtered_df, use_container_width=True, height=320)

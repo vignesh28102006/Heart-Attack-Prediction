@@ -34,14 +34,15 @@
      - XGBoost: CV Recall = 77.43% (±6.55%), CV AUC = 0.8743
    - Status: COMPLETED & VERIFIED.
 
-5. **Task 5: Model Evaluation & Metrics Engine**
+5. **Task 5: Model Evaluation & Metrics Engine (Corrected Methodology)**
    - Files: `src/evaluate.py`, `models/evaluation_metrics.json`, `models/confusion_matrices.png`, `models/roc_curves.png`, `models/metrics_comparison.png`
-   - Implementation: Evaluated all 3 models on the identical holdout test set (61 patients) with primary metric RECALL.
+   - Methodology:
+     - Model Selection: Strictly determined using mean 5-fold CV recall on the 242-sample training set (Selected: Logistic Regression with 80.99% ± 6.16% CV Recall).
+     - Final Evaluation: All 3 models evaluated once on the untouched 20% holdout test set (61 patients).
    - Test Results (Genuine, Zero Fabrication):
+     - Logistic Regression (Selected Model): Recall = 92.86% (TP=26, FN=2), AUC = 0.9665, F1 = 0.8667, Accuracy = 86.89%
      - XGBoost: Recall = 96.43% (TP=27, FN=1), AUC = 0.9589, F1 = 0.9000, Accuracy = 90.16%
-     - Logistic Regression: Recall = 92.86% (TP=26, FN=2), AUC = 0.9665, F1 = 0.8667, Accuracy = 86.89%
      - Random Forest: Recall = 89.29% (TP=25, FN=3), AUC = 0.9470, F1 = 0.8621, Accuracy = 86.89%
-     - Champion Model: XGBoost selected dynamically due to highest clinical Recall.
    - Status: COMPLETED & VERIFIED.
 
 6. **Task 6: Artifact Serialization**

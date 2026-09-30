@@ -1,7 +1,8 @@
 {
-  "trained_at": "2026-09-30T17:38:29.133866+00:00",
-  "primary_metric": "recall",
-  "best_model": "XGBoost",
+  "trained_at": "2026-09-30T18:43:12.030225+00:00",
+  "model_selection_basis": "Mean 5-Fold Stratified Cross-Validation Recall on Training Data",
+  "selected_model": "Logistic Regression",
+  "best_model": "Logistic Regression",
   "numerical_features": [
     "age",
     "trestbps",

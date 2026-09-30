@@ -103,12 +103,25 @@ def train_and_persist_models(
 
     models = get_models(scale_pos_weight=scale_pos)
 
-    # 1. Cross Validation
+    # 1. Cross Validation on training split
     cv_metrics = evaluate_cross_validation(models, X_train, y_train)
+
+    # Model Selection: Predefined criterion is highest mean 5-fold CV recall on training set
+    selected_model_name = max(
+        cv_metrics.keys(),
+        key=lambda k: (cv_metrics[k]["cv_recall_mean"], cv_metrics[k]["cv_f1_mean"])
+    )
+    print("\n" + "=" * 65)
+    print("MODEL SELECTION RESULT (5-Fold Stratified CV on Training Set):")
+    print(f"Selected model based on mean 5-fold CV recall: {selected_model_name}")
+    print(f"  Mean CV Recall:   {cv_metrics[selected_model_name]['cv_recall_mean']:.4f} (±{cv_metrics[selected_model_name]['cv_recall_std']:.4f})")
+    print(f"  Mean CV ROC-AUC:  {cv_metrics[selected_model_name]['cv_roc_auc_mean']:.4f} (±{cv_metrics[selected_model_name]['cv_roc_auc_std']:.4f})")
+    print(f"  Mean CV F1-Score: {cv_metrics[selected_model_name]['cv_f1_mean']:.4f} (±{cv_metrics[selected_model_name]['cv_f1_std']:.4f})")
+    print("=" * 65 + "\n")
 
     # 2. Train on full X_train
     trained_models = {}
-    print("\n--- Training Final Models on Full Training Split ---")
+    print("--- Training Final Models on Full Training Split ---")
     for name, model in models.items():
         print(f"Training {name}...")
         model.fit(X_train, y_train)
@@ -124,6 +137,7 @@ def train_and_persist_models(
     return {
         "models": trained_models,
         "cv_metrics": cv_metrics,
+        "selected_model": selected_model_name,
     }
 
 

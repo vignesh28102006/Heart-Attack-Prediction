@@ -48,7 +48,7 @@ FEATURE_DESCRIPTIONS = {
     "slope": "The slope of the peak exercise ST segment (0: upsloping, 1: flat, 2: downsloping)",
     "ca": "Number of major vessels (0-3) colored by fluoroscopy",
     "thal": "Thallium stress result (1 = normal, 2 = fixed defect, 3 = reversible defect)",
-    "target": "Diagnosis of heart disease (0 = absence, 1 = presence)",
+    "target": "Presence of heart disease (0 = absence, 1 = presence)",
 }
 
 # Machine Learning Configuration

@@ -67,3 +67,17 @@ def test_metrics_file_validity():
     for m_name, m_stats in data["models"].items():
         assert m_stats["recall"] >= 0.70, f"{m_name} recall unexpectedly low: {m_stats['recall']}"
         assert m_stats["accuracy"] >= 0.70, f"{m_name} accuracy unexpectedly low: {m_stats['accuracy']}"
+
+
+def test_model_selection_criterion():
+    """Verify model selection is strictly determined by mean CV recall on training set."""
+    import json
+    with open(METRICS_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    assert "model_selection" in data
+    assert data["model_selection"]["primary_metric"] == "mean_cv_recall"
+    # Logistic Regression had highest mean CV Recall (80.99%) on training set
+    assert data["selected_model"] == "Logistic Regression"
+    # Ensure test-set recall leader (XGBoost 96.43%) was NOT used as the selection basis
+    assert data["model_selection"]["selected_model"] == "Logistic Regression"
